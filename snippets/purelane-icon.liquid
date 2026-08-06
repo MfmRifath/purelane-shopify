@@ -1,0 +1,82 @@
+{%- comment -%}
+  Purelane icon
+
+  Accepts:
+  - name  {String} one of: leaf, shield, ban, heart, arrow-right, check,
+                           check-bold, pause, play, star
+  - class {String} optional extra class
+
+  Every icon in the prototype was pasted inline at each use site, so the leaf
+  alone appeared eleven times. One snippet keeps them consistent and keeps the
+  rendered HTML smaller.
+{%- endcomment -%}
+
+{%- liquid
+  assign icon = name | default: 'leaf'
+  assign classes = 'pl-icon'
+  if class != blank
+    assign classes = classes | append: ' ' | append: class
+  endif
+-%}
+
+{%- case icon -%}
+  {%- when 'leaf' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/>
+      <path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/>
+    </svg>
+  {%- when 'shield' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 3 4.5 6v6.2c0 4.3 3.1 7.6 7.5 8.8 4.4-1.2 7.5-4.5 7.5-8.8V6L12 3Z"/>
+      <path d="m9 12 2.2 2.2L15.4 10"/>
+    </svg>
+  {%- when 'ban' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="8.4"/>
+      <path d="M6.4 17.6 17.6 6.4"/>
+    </svg>
+  {%- when 'heart' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M12 20s-7-4.4-7-9.4A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7 2.6c0 5-7 9.4-7 9.4Z"/>
+    </svg>
+  {%- when 'bubbles' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="8" cy="8.5" r="3.2"/>
+      <circle cx="16.4" cy="6.6" r="2.2"/>
+      <circle cx="15" cy="13" r="2.8"/>
+      <circle cx="8.6" cy="15.6" r="2.1"/>
+      <path d="M4 21h16"/>
+    </svg>
+  {%- when 'truck' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M2.6 16.4V7.2h10.2v9.2"/>
+      <path d="M12.8 10.4h4l3.6 3.2v2.8h-7.6"/>
+      <circle cx="6.6" cy="18" r="1.9"/>
+      <circle cx="16.6" cy="18" r="1.9"/>
+    </svg>
+  {%- when 'arrow-right' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M5 12h13m-5-6 6 6-6 6"/>
+    </svg>
+  {%- when 'check' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="m5 13 4 4L19 7"/>
+    </svg>
+  {%- when 'check-bold' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="m5 13 4 4L19 7"/>
+    </svg>
+  {%- when 'pause' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <rect x="6.5" y="5" width="4" height="14" rx="1.3"/>
+      <rect x="13.5" y="5" width="4" height="14" rx="1.3"/>
+    </svg>
+  {%- when 'play' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M8 5.4v13.2a1 1 0 0 0 1.53.85l10.2-6.6a1 1 0 0 0 0-1.7L9.53 4.55A1 1 0 0 0 8 5.4Z"/>
+    </svg>
+  {%- when 'star' -%}
+    <svg class="{{ classes }}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="m12 3.4 2.7 5.6 6.1.85-4.4 4.3 1.05 6.1L12 17.4l-5.45 2.85 1.05-6.1-4.4-4.3 6.1-.85Z"/>
+    </svg>
+{%- endcase -%}
