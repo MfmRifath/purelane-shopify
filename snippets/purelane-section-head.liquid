@@ -1,0 +1,51 @@
+{%- comment -%}
+  Purelane section head — kicker / heading / leaf rule / lede.
+
+  Four of the five sections open with this exact block, so it lives in one
+  place. Each part is optional; clearing the setting removes the element rather
+  than leaving an empty box behind.
+
+  Accepts:
+  - kicker      {String}
+  - heading     {String}
+  - lede        {String}
+  - show_rule   {Boolean}
+  - heading_tag {String}  'h2' (default) or 'h1'
+  - class       {String}
+  - reveal      {Boolean} wrap in a scroll reveal, default true
+{%- endcomment -%}
+
+{%- liquid
+  assign tag = heading_tag | default: 'h2'
+  assign wrapper_class = 'pl-head'
+  if class != blank
+    assign wrapper_class = wrapper_class | append: ' ' | append: class
+  endif
+  unless reveal == false
+    assign wrapper_class = wrapper_class | append: ' pl-rv'
+  endunless
+-%}
+
+{%- if kicker != blank or heading != blank or lede != blank -%}
+  <div class="{{ wrapper_class }}">
+    {%- if kicker != blank -%}
+      <span class="pl-kicker">{{ kicker }}</span>
+    {%- endif -%}
+
+    {%- if heading != blank -%}
+      <{{ tag }} class="pl-d2">{{ heading }}</{{ tag }}>
+    {%- endif -%}
+
+    {%- if show_rule -%}
+      <div class="pl-rule" aria-hidden="true">
+        <i></i>
+        {%- render 'purelane-icon', name: 'leaf' -%}
+        <i></i>
+      </div>
+    {%- endif -%}
+
+    {%- if lede != blank -%}
+      <p class="pl-lede pl-lede--after">{{ lede }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,0 +1,126 @@
+{%- comment -%}
+  Purelane product card
+
+  The shop grid's card. Everything on it comes off the product: title, image,
+  price, compare-at, rating metafields, and the badge metafield. Nothing is
+  passed in as copy.
+
+  Accepts:
+  - product        {Product} required
+  - section_id     {String}  required, for unique form ids
+  - show_rating    {Boolean}
+  - show_badge     {Boolean}
+  - quick_add      {Boolean} render Dawn's AJAX add-to-cart
+  - button_label   {String}
+  - image_loading  {String}  'lazy' (default) or 'eager'
+  - reveal_delay   {Number}  0-4, staggers the scroll reveal
+  - columns        {Number}  desktop column count, used for the sizes hint
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign sold_out = false
+  unless product.available
+    assign sold_out = true
+  endunless
+
+  assign badge = product.metafields.custom.card_badge.value
+  assign form_id = 'PurelaneCard-' | append: section_id | append: '-' | append: product.id
+
+  assign cols = columns | default: 4
+  assign vw = 100 | divided_by: cols | append: 'vw'
+  assign sizes = '(max-width: 760px) 40vw, (max-width: 1180px) ' | append: vw | append: ', 240px'
+
+  assign delay_class = ''
+  if reveal_delay > 0
+    assign delay_class = ' pl-rv--' | append: reveal_delay
+  endif
+-%}
+
+<article class="pl-glass pl-card pl-rv{{ delay_class }}">
+  <div class="pl-card__shot">
+    {%- if show_badge -%}
+      {%- if sold_out -%}
+        <span class="pl-pill pl-pill--muted">{{ 'purelane.card.sold_out' | t }}</span>
+      {%- elsif badge != blank -%}
+        <span class="pl-pill">{{ badge }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="pl-pill">{{ 'purelane.card.on_sale' | t }}</span>
+      {%- endif -%}
+    {%- endif -%}
+
+    <a class="pl-card__media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+      {%- render 'purelane-product-media',
+        product: product,
+        sizes: sizes,
+        loading: image_loading,
+        widths: '120,180,240,320,420,560'
+      -%}
+    </a>
+  </div>
+
+  {%- comment -%}
+    The title is the card's only link. The prototype had a bare <h4> and an
+    inert button, which gave a keyboard user no way into the product. The
+    seed catalogue includes a deliberately long title, so the heading clamps
+    to two lines and keeps its full text in the accessible name.
+  {%- endcomment -%}
+  <h3 class="pl-card__title">
+    <a href="{{ product.url }}" id="{{ form_id }}-title">{{ product.title }}</a>
+  </h3>
+
+  {%- if show_rating -%}
+    {%- render 'purelane-rating', product: product -%}
+  {%- endif -%}
+
+  {%- render 'purelane-price',
+    price: product.price,
+    compare_at_price: product.compare_at_price,
+    price_varies: product.price_varies,
+    style: 'card',
+    savings: 'percent'
+  -%}
+
+  {%- if sold_out -%}
+    <button type="button" class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block" disabled>
+      {{ 'purelane.card.sold_out' | t }}
+    </button>
+  {%- elsif product.variants.size > 1 -%}
+    {%- comment -%}
+      More than one variant: send them to the product page instead of guessing
+      which one they meant.
+    {%- endcomment -%}
+    <a class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block" href="{{ product.url }}">
+      {{ 'purelane.card.choose_options' | t }}
+    </a>
+  {%- elsif quick_add -%}
+    <product-form data-section-id="{{ section_id }}">
+      {%- form 'product', product, id: form_id, class: 'pl-card__form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
+        <input type="hidden" name="quantity" value="1">
+        <button
+          id="{{ form_id }}-submit"
+          type="submit"
+          name="add"
+          class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block"
+          aria-labelledby="{{ form_id }}-submit {{ form_id }}-title"
+          aria-live="polite"
+        >
+          {%- if button_label != blank -%}
+            <span>{{ button_label }}</span>
+          {%- else -%}
+            <span>{{ 'purelane.card.add_to_cart' | t }}</span>
+          {%- endif -%}
+          {%- render 'loading-spinner' -%}
+        </button>
+        <div class="product-form__error-message-wrapper pl-card__error" role="alert" hidden>
+          <span class="product-form__error-message"></span>
+        </div>
+      {%- endform -%}
+    </product-form>
+  {%- else -%}
+    <a class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block" href="{{ product.url }}">
+      {{ 'purelane.card.view_product' | t }}
+    </a>
+  {%- endif -%}
+</article>

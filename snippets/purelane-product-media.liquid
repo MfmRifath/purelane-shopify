@@ -1,0 +1,89 @@
+{%- comment -%}
+  Purelane product media
+
+  One renderer for every product visual on the page: the hero stage, the shop
+  grid, the combo stacks, the bundle tier strips. The prototype had fourteen
+  base64 bottle SVGs baked into CSS custom properties; this pulls the real
+  image off the product and falls back to an on-brand bottle when there isn't
+  one (the seed catalogue deliberately includes a product with no image).
+
+  Accepts:
+  - product        {Product}  optional
+  - image          {Image}    optional, overrides product.featured_image
+  - class          {String}   extra classes on the <img>/<svg>
+  - sizes          {String}   sizes attribute, defaults to a small fixed hint
+  - widths         {String}   comma separated srcset widths
+  - loading        {String}   'lazy' (default) or 'eager'
+  - fetchpriority  {String}   optional
+  - alt            {String}   overrides the image alt / product title
+{%- endcomment -%}
+
+{%- liquid
+  assign pl_image = image
+  if pl_image == blank and product != blank
+    assign pl_image = product.featured_image
+  endif
+
+  assign pl_class = 'pl-pimg'
+  if class != blank
+    assign pl_class = pl_class | append: ' ' | append: class
+  endif
+
+  assign pl_alt = alt
+  if pl_alt == blank
+    assign pl_alt = pl_image.alt
+  endif
+  if pl_alt == blank
+    assign pl_alt = product.title
+  endif
+
+  assign pl_loading = loading | default: 'lazy'
+  assign pl_widths = widths | default: '120,180,240,320,420,560,760' | split: ','
+  assign pl_sizes = sizes | default: '(max-width: 760px) 30vw, 200px'
+-%}
+
+{%- if pl_image != blank -%}
+  {%- capture pl_srcset -%}
+    {%- for w in pl_widths -%}
+      {%- assign width_int = w | strip | plus: 0 -%}
+      {%- if width_int < pl_image.width -%}
+        {{ pl_image | image_url: width: width_int }} {{ width_int }}w,
+      {%- endif -%}
+    {%- endfor -%}
+    {{ pl_image | image_url: width: pl_image.width }} {{ pl_image.width }}w
+  {%- endcapture -%}
+  <img
+    class="{{ pl_class }}"
+    src="{{ pl_image | image_url: width: 480 }}"
+    srcset="{{ pl_srcset | strip_newlines | strip }}"
+    sizes="{{ pl_sizes }}"
+    width="{{ pl_image.width }}"
+    height="{{ pl_image.height }}"
+    alt="{{ pl_alt | escape }}"
+    loading="{{ pl_loading }}"
+    decoding="async"
+    {% if fetchpriority != blank %}fetchpriority="{{ fetchpriority }}"{% endif %}
+  >
+{%- else -%}
+  {%- comment -%}
+    No image on the product. Rather than Dawn's grey camera placeholder, draw
+    the same bottle silhouette the prototype used, so a merchant mid-upload
+    still gets a shelf that reads correctly.
+  {%- endcomment -%}
+  <svg
+    class="{{ pl_class }} pl-pimg--ph"
+    viewBox="0 0 380 595"
+    width="380"
+    height="595"
+    role="img"
+    aria-label="{{ pl_alt | default: 'Product image coming soon' | escape }}"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x="149.9" y="0" width="80.1" height="59.5" rx="17.6" fill="currentColor" opacity=".85"/>
+    <rect x="161.2" y="53.6" width="57.7" height="41.7" fill="currentColor" opacity=".7"/>
+    <rect x="72.2" y="119" width="235.6" height="476" rx="37.7" fill="currentColor" opacity=".78"/>
+    <rect x="100.5" y="261.8" width="179.1" height="161.8" rx="11.8" fill="#faf7fd" opacity=".88"/>
+    <rect x="128.7" y="309.4" width="122.5" height="21.4" rx="2" fill="currentColor" opacity=".55"/>
+    <rect x="142.9" y="352.2" width="94.2" height="16.7" rx="2" fill="currentColor" opacity=".35"/>
+  </svg>
+{%- endif -%}
