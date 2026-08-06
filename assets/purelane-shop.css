@@ -1,0 +1,183 @@
+/* ==========================================================================
+   Purelane shop grid
+   ========================================================================== */
+
+.pl-shelf {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(var(--pl-cols-mobile, 2), minmax(0, 1fr));
+}
+
+@media (min-width: 860px) {
+  .pl-shelf {
+    grid-template-columns: repeat(var(--pl-cols, 4), minmax(0, 1fr));
+  }
+}
+
+.pl-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s var(--pl-ease);
+}
+
+@media (hover: hover) {
+  .pl-card:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.pl-card__shot {
+  height: 150px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.6), rgba(236, 230, 247, 0.42));
+  border: 1px solid rgba(75, 58, 143, 0.1);
+}
+
+.pl-card__media {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* The prototype only sized the inline <svg> bottles (`.card .shot svg`), so the
+   four cards that used a `.pimg` background span collapsed to zero height on
+   any viewport above 760px. Sizing the media itself fixes that. */
+.pl-card__shot .pl-pimg {
+  height: 122px;
+  width: auto;
+  filter: drop-shadow(0 8px 13px rgba(0, 74, 66, 0.13));
+}
+
+.pl-pill {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  z-index: 2;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(201, 118, 29, 0.34);
+  color: var(--pl-leaf);
+}
+
+/* Stock state has no equivalent in the prototype. Same silhouette, neutral
+   ink, so a sold-out card reads as unavailable without a new visual language. */
+.pl-pill--muted {
+  border-color: rgba(75, 58, 143, 0.24);
+  color: var(--pl-paper-2);
+}
+
+.pl-card__title {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--pl-surface);
+  line-height: 1.2;
+  margin: 0 0 7px;
+  overflow-wrap: anywhere;
+}
+
+.pl-card__title a {
+  transition: color 0.25s var(--pl-ease);
+}
+
+.pl-card__title a:hover {
+  color: var(--pl-leaf);
+}
+
+.pl-rate {
+  font-size: 11.5px;
+  color: var(--pl-paper-2);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pl-rate b {
+  color: var(--pl-accent);
+  font-weight: 700;
+}
+
+/* Single line, no wrap: at 375px a wrapping price row adds 12px to every card
+   in the grid. This is what the prototype does, and it assumes the store's
+   money format has no decimals (see the setup notes). */
+.pl-price--card {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pl-price--card .pl-price__now {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-size: 18px;
+  color: var(--pl-surface);
+  font-weight: 700;
+}
+
+.pl-price--card .pl-price__was {
+  font-size: 12px;
+  color: var(--pl-paper-3);
+}
+
+.pl-price--card .pl-price__save {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--pl-accent);
+}
+
+.pl-price__from {
+  margin-right: 4px;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pl-paper-3);
+}
+
+.pl-card__form {
+  margin: 0;
+}
+
+.pl-shop__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.pl-card__error {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: #8a1f11;
+}
+
+.pl-card__error[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .pl-card__shot {
+    height: 126px;
+  }
+
+  .pl-card__shot .pl-pimg {
+    height: 108px;
+  }
+}
