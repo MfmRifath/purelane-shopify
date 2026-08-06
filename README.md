@@ -110,5 +110,26 @@ reports are all pre-existing in stock Dawn 15.5.0 — `layout/password.liquid`,
 
 ---
 
+## Provenance
+
+The root commit is stock **Dawn 15.5.0**, unmodified, still authored by
+Shopify. Dawn's upstream history is squashed into that one commit so this
+repo's log shows the work done for this build rather than 1,010 commits of
+Dawn's own development.
+
+To verify the base is untouched stock Dawn, diff the root commit's tree against
+Shopify's `v15.5.0` tag:
+
+```bash
+git remote add dawn https://github.com/Shopify/dawn.git
+git fetch dawn --tags
+git diff dawn/v15.5.0 $(git rev-list --max-parents=0 HEAD)   # no output = identical
+```
+
+Everything after that root commit is this build. Four Dawn files are modified,
+all additively, and they are listed above.
+
+---
+
 Built on [Dawn](https://github.com/Shopify/dawn), MIT licensed. See
 [LICENSE.md](LICENSE.md).
