@@ -1,0 +1,187 @@
+/* ==========================================================================
+   Purelane reviews rail
+   ========================================================================== */
+
+.pl-revhead {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.pl-agg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pl-paper-2);
+}
+
+.pl-agg b {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--pl-accent);
+  letter-spacing: 0;
+}
+
+.pl-revhead .pl-stars {
+  color: var(--pl-leaf-2);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+}
+
+pl-marquee {
+  display: block;
+  position: relative;
+}
+
+.pl-revrail {
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.pl-revrail:focus-visible {
+  outline: 2px solid var(--pl-leaf);
+  outline-offset: -2px;
+  border-radius: 18px;
+}
+
+.pl-revtrack {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: pl-marq var(--pl-marq-duration, 52s) linear infinite;
+}
+
+.pl-revrail:hover .pl-revtrack,
+.pl-revrail:focus-within .pl-revtrack,
+pl-marquee.is-paused .pl-revtrack {
+  animation-play-state: paused;
+}
+
+@keyframes pl-marq {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* WCAG 2.2.2: content that moves for more than five seconds needs a pause
+   control. The prototype only paused on hover, which no keyboard or
+   screen-reader user can reach. This button is invisible until it is focused,
+   so the design is untouched but the mechanism exists. */
+.pl-marquee__toggle {
+  position: absolute;
+  right: 18px;
+  top: -6px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--pl-teal-ink);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(75, 58, 143, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s var(--pl-ease);
+}
+
+.pl-marquee__toggle:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pl-marquee__toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pl-rcard {
+  flex: 0 0 auto;
+  width: 284px;
+  padding: 15px 17px;
+  border-radius: 18px;
+}
+
+.pl-rcard .pl-stars {
+  color: var(--pl-leaf-2);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  margin-bottom: 9px;
+  display: block;
+}
+
+.pl-rcard__title {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pl-surface);
+  margin: 0 0 7px;
+}
+
+.pl-rcard__body {
+  font-size: 12.6px;
+  color: var(--pl-paper-2);
+  line-height: 1.52;
+  margin: 0 0 11px;
+}
+
+.pl-rcard__who {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pl-paper-3);
+}
+
+.pl-rcard__who b {
+  color: var(--pl-teal-ink);
+  font-weight: 700;
+}
+
+.pl-rcard__who svg {
+  width: 12px;
+  height: 12px;
+  color: var(--pl-leaf);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 760px) {
+  .pl-rcard {
+    width: 250px;
+    padding: 13px 14px;
+  }
+
+  .pl-revtrack {
+    animation-duration: calc(var(--pl-marq-duration, 52s) * 0.77);
+  }
+}
+
+/* With motion turned down the track stops, so the rail becomes a normal
+   horizontal scroller rather than a frozen row that hides most of the reviews. */
+@media (prefers-reduced-motion: reduce) {
+  .pl-revrail {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .pl-revtrack {
+    animation: none;
+  }
+}

@@ -1,0 +1,228 @@
+{%- comment -%}
+  Purelane — reviews rail  (#reviews in the prototype)
+
+  Reviews are `purelane_review` metaobject entries. The marquee needs two
+  identical halves to loop seamlessly, so the list is rendered twice and the
+  second copy is hidden from assistive tech instead of being read out again.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-reviews.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'purelane-motion.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'purelane-reviews.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign reviews = section.settings.reviews
+  if reviews.size == 0
+    assign reviews = shop.metaobjects.purelane_review.values
+  endif
+  assign anchor = section.settings.anchor | handle
+  assign limit = section.settings.reviews_to_show
+-%}
+
+<section
+  {% if anchor != blank %}id="{{ anchor }}"{% endif %}
+  class="pl pl-revband"
+  data-pl-scene="{{ section.settings.scene }}"
+  {% if section.settings.rail_label != blank %}
+    data-pl-rail-label="{{ section.settings.rail_label | escape }}"
+  {% endif %}
+  style="--pl-pt:{{ section.settings.padding_top }}px;--pl-pb:{{ section.settings.padding_bottom }}px;--pl-marq-duration:{{ section.settings.speed }}s;"
+>
+  {%- if section.settings.kicker != blank or section.settings.rating != blank or section.settings.reach != blank -%}
+    <div class="pl-wrap">
+      <div class="pl-revhead pl-rv">
+        {%- if section.settings.kicker != blank -%}
+          <span class="pl-kicker">{{ section.settings.kicker }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.rating != blank -%}
+          <span class="pl-agg">
+            <span class="pl-stars" aria-hidden="true">★★★★★</span>
+            <b>{{ section.settings.rating }}</b>
+            {{ section.settings.rating_note }}
+          </span>
+        {%- endif -%}
+
+        {%- if section.settings.reach != blank -%}
+          <span class="pl-agg">
+            {{ section.settings.reach_prefix }}
+            <b>{{ section.settings.reach }}</b>
+            {{ section.settings.reach_suffix }}
+          </span>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if reviews.size > 0 -%}
+    <pl-marquee class="pl-rv">
+      <button
+        type="button"
+        class="pl-marquee__toggle"
+        data-pl-toggle
+        aria-pressed="false"
+        aria-label="{{ 'purelane.reviews.pause' | t }}"
+        data-label-play="{{ 'purelane.reviews.play' | t | escape }}"
+        data-label-pause="{{ 'purelane.reviews.pause' | t | escape }}"
+      >
+        <span data-pl-icon-pause>{%- render 'purelane-icon', name: 'pause' -%}</span>
+        <span data-pl-icon-play hidden>{%- render 'purelane-icon', name: 'play' -%}</span>
+      </button>
+
+      <div
+        class="pl-revrail"
+        role="region"
+        aria-label="{{ 'purelane.reviews.region' | t }}"
+        tabindex="0"
+      >
+        <div class="pl-revtrack" data-pl-track>
+          {%- for pass in (1..2) -%}
+            {%- assign is_duplicate = false -%}
+            {%- if pass == 2 -%}
+              {%- assign is_duplicate = true -%}
+            {%- endif -%}
+            {%- for review in reviews limit: limit -%}
+              {%- render 'purelane-review-card', review: review, duplicate: is_duplicate -%}
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </pl-marquee>
+  {%- elsif request.design_mode -%}
+    <div class="pl-wrap">
+      <p class="pl-body-s pl-empty">{{ 'purelane.editor.no_reviews' | t }}</p>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Purelane reviews rail",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Summary line"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Eyebrow",
+      "default": "That's what they said"
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Average rating",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "rating_note",
+      "label": "Text after the rating",
+      "default": "from 8,000+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "reach_prefix",
+      "label": "Text before the reach figure",
+      "default": "Loved by"
+    },
+    {
+      "type": "text",
+      "id": "reach",
+      "label": "Reach figure",
+      "default": "12 lakh+"
+    },
+    {
+      "type": "text",
+      "id": "reach_suffix",
+      "label": "Text after the reach figure",
+      "default": "homes"
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "reviews",
+      "metaobject_type": "purelane_review",
+      "label": "Reviews",
+      "limit": 20,
+      "info": "Leave empty to show every published review. Create them in Content → Metaobjects."
+    },
+    {
+      "type": "range",
+      "id": "reviews_to_show",
+      "label": "Reviews in the loop",
+      "min": 3,
+      "max": 20,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Loop duration",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "s",
+      "default": 52,
+      "info": "Higher is slower. The rail pauses on hover, on focus, and when Reduce motion is on."
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Anchor id",
+      "default": "reviews"
+    },
+    {
+      "type": "text",
+      "id": "rail_label",
+      "label": "Progress rail label",
+      "default": "Reviews"
+    },
+    {
+      "type": "range",
+      "id": "scene",
+      "label": "Backdrop depth",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    }
+  ],
+  "presets": [
+    {
+      "name": "Purelane reviews rail"
+    }
+  ]
+}
+{% endschema %}
