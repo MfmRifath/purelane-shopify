@@ -1,0 +1,165 @@
+/* ==========================================================================
+   Purelane bundles
+   ========================================================================== */
+
+.pl-bundles__intro {
+  margin-bottom: 16px;
+}
+
+.pl-bundles__intro .pl-head {
+  margin-bottom: 0;
+}
+
+.pl-tiers {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .pl-tiers {
+    grid-template-columns: repeat(var(--pl-tier-cols, 3), minmax(0, 1fr));
+  }
+}
+
+/* Deliberately not a flex column: in the prototype the tier's button follows
+   the feature list rather than being pushed to the bottom of the card, so
+   tiers with different numbers of features have their buttons at different
+   heights. Kept as-is to match. */
+.pl-tier {
+  padding: 24px 22px;
+  transition: transform 0.4s var(--pl-ease);
+}
+
+@media (hover: hover) {
+  .pl-tier:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.pl-tier--best {
+  border-color: rgba(201, 118, 29, 0.46);
+  box-shadow: 0 22px 54px rgba(58, 44, 112, 0.14), 0 0 0 1px rgba(201, 118, 29, 0.24), var(--pl-g-inset);
+}
+
+.pl-tier__tag {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  background: rgba(201, 118, 29, 0.14);
+  border: 1px solid rgba(201, 118, 29, 0.34);
+  color: var(--pl-leaf);
+}
+
+.pl-tierpix {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  height: 78px;
+  margin: -4px 0 16px;
+  padding: 8px 6px;
+  border-radius: 14px;
+  background: linear-gradient(162deg, rgba(255, 255, 255, 0.54), rgba(236, 230, 247, 0.34));
+  border: 1px solid rgba(75, 58, 143, 0.11);
+}
+
+.pl-tierpix .pl-pimg {
+  height: 62px;
+  width: auto;
+  filter: drop-shadow(0 5px 8px rgba(0, 74, 66, 0.13));
+}
+
+.pl-tierpix--dense .pl-pimg {
+  height: 54px;
+}
+
+.pl-tier__qty {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 52px;
+  line-height: 0.9;
+  color: var(--pl-surface);
+  letter-spacing: -0.03em;
+}
+
+.pl-tier__qty small {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pl-paper-3);
+  display: block;
+  margin-top: 6px;
+}
+
+.pl-price--tier {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 27px;
+  color: var(--pl-accent);
+  margin: 16px 0 4px;
+  display: block;
+}
+
+.pl-price--tier .pl-price__now {
+  font: inherit;
+  color: inherit;
+}
+
+.pl-price--tier .pl-price__was {
+  font-size: 14px;
+  color: var(--pl-paper-3);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.pl-tier__unit {
+  font-size: 12px;
+}
+
+.pl-tier__list {
+  list-style: none;
+  margin: 16px 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.pl-tier__list li {
+  display: flex;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--pl-paper-2);
+}
+
+.pl-tier__list li svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pl-leaf);
+  flex: 0 0 auto;
+  margin-top: 4px;
+}
+
+@media (max-width: 760px) {
+  .pl-tier__qty {
+    font-size: 44px;
+  }
+
+  .pl-tierpix {
+    height: 70px;
+  }
+
+  .pl-tierpix .pl-pimg {
+    height: 54px;
+  }
+
+  .pl-tierpix--dense .pl-pimg {
+    height: 46px;
+  }
+}
