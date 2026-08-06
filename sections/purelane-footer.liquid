@@ -1,0 +1,136 @@
+{%- comment -%}
+  Purelane — footer
+
+  Brand column plus link columns as blocks, so a merchant can add, remove and
+  reorder columns and point each at a real Shopify navigation menu.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-chrome.css' | asset_url | stylesheet_tag }}
+
+<footer class="pl-footer">
+  <div class="pl-wrap">
+    <div class="pl-fgrid">
+      {%- for block in section.blocks -%}
+        <div class="pl-fcol" {{ block.shopify_attributes }}>
+          {%- case block.type -%}
+            {%- when 'brand' -%}
+              <a class="pl-brand" href="{{ routes.root_url }}">
+                <span class="pl-brand__mark">
+                  {%- if block.settings.logo != blank -%}
+                    {{ block.settings.logo | image_url: width: 120 | image_tag: alt: '', loading: 'lazy', widths: '40,80,120' }}
+                  {%- else -%}
+                    {%- render 'purelane-icon', name: 'leaf' -%}
+                  {%- endif -%}
+                </span>
+                <span class="pl-brand__txt">
+                  <span class="pl-brand__n1">{{ block.settings.brand_name | default: shop.name }}</span>
+                  {%- if block.settings.tagline != blank -%}
+                    <span class="pl-brand__n2">{{ block.settings.tagline }}</span>
+                  {%- endif -%}
+                </span>
+              </a>
+              {%- if block.settings.text != blank -%}
+                <p style="max-width:30ch">{{ block.settings.text }}</p>
+              {%- endif -%}
+
+            {%- when 'menu' -%}
+              {%- if block.settings.heading != blank -%}
+                <h2>{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {%- for link in block.settings.menu.links -%}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              {%- endfor -%}
+
+            {%- when 'contact' -%}
+              {%- if block.settings.heading != blank -%}
+                <h2>{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {%- if block.settings.email != blank -%}
+                <a href="mailto:{{ block.settings.email }}">{{ block.settings.email }}</a>
+              {%- endif -%}
+              {%- if block.settings.phone != blank -%}
+                <a href="tel:{{ block.settings.phone | remove: ' ' }}">{{ block.settings.phone }}</a>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <p style="font-size:12px;color:var(--pl-paper-3)">{{ block.settings.text }}</p>
+              {%- endif -%}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.copyright != blank or section.settings.legal != blank -%}
+      <div class="pl-fbot">
+        <span>{{ section.settings.copyright }}</span>
+        <span>{{ section.settings.legal }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Purelane footer",
+  "max_blocks": 6,
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "default": "© 2026 Purelane Eco Products Private Limited"
+    },
+    { "type": "text", "id": "legal", "label": "Legal line", "default": "Privacy · Terms · Refunds · Contact" }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "limit": 1,
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo" },
+        { "type": "text", "id": "brand_name", "label": "Brand name", "default": "Purelane" },
+        { "type": "text", "id": "tagline", "label": "Tagline", "default": "Clean, simply" },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Effective cleaning, powered by nature. Made for Indian homes since day one."
+        }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact column",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Get in touch" },
+        { "type": "text", "id": "email", "label": "Email" },
+        { "type": "text", "id": "phone", "label": "Phone" },
+        { "type": "text", "id": "text", "label": "Legal name" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Purelane footer",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu", "settings": { "heading": "Shop" } },
+        { "type": "menu", "settings": { "heading": "About" } },
+        { "type": "contact" }
+      ]
+    }
+  ]
+}
+{% endschema %}

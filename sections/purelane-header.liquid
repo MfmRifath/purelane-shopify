@@ -1,0 +1,108 @@
+{%- comment -%}
+  Purelane — header
+
+  The floating glass nav pill. Fixed, and it rises from 38px to 10px once the
+  page scrolls past 90px, exactly as the prototype does.
+
+  Two things the prototype could not do and this has to: the burger opens a
+  real menu (the prototype's was inert), and the cart count comes from the
+  cart rather than a hardcoded 0.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-chrome.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'purelane-chrome.js' | asset_url }}" defer="defer"></script>
+
+<pl-header class="pl-header">
+  <div class="pl-navpill pl-glass">
+    <a class="pl-brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      <span class="pl-brand__mark">
+        {%- if section.settings.logo != blank -%}
+          {{ section.settings.logo | image_url: width: 120 | image_tag: alt: '', loading: 'eager', widths: '40,80,120' }}
+        {%- else -%}
+          {%- render 'purelane-icon', name: 'leaf' -%}
+        {%- endif -%}
+      </span>
+      <span class="pl-brand__txt">
+        <span class="pl-brand__n1">{{ section.settings.brand_name | default: shop.name }}</span>
+        {%- if section.settings.tagline != blank -%}
+          <span class="pl-brand__n2">{{ section.settings.tagline }}</span>
+        {%- endif -%}
+      </span>
+    </a>
+
+    {%- if section.settings.menu != blank -%}
+      <nav class="pl-nav" aria-label="{{ 'purelane.header.main_nav' | t }}">
+        {%- for link in section.settings.menu.links -%}
+          <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    <div class="pl-navtools">
+      {%- if section.settings.show_search -%}
+        <a class="pl-ico pl-ico--hide-s" href="{{ routes.search_url }}" aria-label="{{ 'purelane.header.search' | t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a class="pl-ico pl-ico--hide-s" href="{{ routes.account_url }}" aria-label="{{ 'purelane.header.account' | t }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+      <a class="pl-ico" href="{{ routes.cart_url }}" aria-label="{{ 'purelane.header.cart' | t: count: cart.item_count }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 6h2l2.2 10.4a1.6 1.6 0 0 0 1.6 1.3h7.6a1.6 1.6 0 0 0 1.6-1.3L20.5 9H6.4"/>
+          <circle cx="10" cy="20.5" r="1.1"/><circle cx="17.5" cy="20.5" r="1.1"/>
+        </svg>
+        <span class="pl-ico__dot" aria-hidden="true">{{ cart.item_count }}</span>
+      </a>
+
+      {%- if section.settings.menu != blank -%}
+        <button
+          type="button"
+          class="pl-ico pl-burger"
+          data-pl-menu-toggle
+          aria-expanded="false"
+          aria-controls="PurelaneMobileNav-{{ section.id }}"
+          aria-label="{{ 'purelane.header.menu' | t }}"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 8h16M4 16h16"/>
+          </svg>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.menu != blank -%}
+    <div class="pl-mobilenav pl-glass" id="PurelaneMobileNav-{{ section.id }}" data-pl-menu>
+      {%- for link in section.settings.menu.links -%}
+        <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</pl-header>
+
+{% schema %}
+{
+  "name": "Purelane header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Leave blank to use the leaf mark." },
+    { "type": "text", "id": "brand_name", "label": "Brand name", "default": "Purelane" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Clean, simply" },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "Show account", "default": true }
+  ],
+  "presets": [{ "name": "Purelane header" }]
+}
+{% endschema %}

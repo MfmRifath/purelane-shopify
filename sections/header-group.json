@@ -2,54 +2,27 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "announcement-bar": {
-      "type": "announcement-bar",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "show_line_separator": true,
-        "show_social": false,
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "enable_country_selector": false,
-        "enable_language_selector": false
-      },
+    "purelane_ticker": {
+      "type": "purelane-announcement",
       "blocks": {
-        "announcement-bar-0": {
-          "type": "announcement",
-          "settings": {
-            "text": "Welcome to our store",
-            "text_alignment": "center",
-            "color_scheme": "scheme-1",
-            "link": ""
-          }
-        }
+        "m1": { "type": "message", "settings": { "text": "Free shipping <b>on every bundle across India</b>" } },
+        "m2": { "type": "message", "settings": { "text": "100% plant-based <b>and non-toxic</b>" } },
+        "m3": { "type": "message", "settings": { "text": "Loved by <b>30,000+ happy homes</b>" } },
+        "m4": { "type": "message", "settings": { "text": "Buy 3 <b>at flat ₹499</b>" } }
       },
-      "block_order": [
-        "announcement-bar-0"
-      ]
+      "block_order": ["m1", "m2", "m3", "m4"],
+      "settings": { "speed": 30 }
     },
-    "header": {
-      "type": "header",
+    "purelane_header": {
+      "type": "purelane-header",
       "settings": {
-        "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1",
-        "logo_position": "middle-left",
+        "brand_name": "Purelane",
+        "tagline": "Clean, simply",
         "menu": "main-menu",
-        "menu_type_desktop": "dropdown",
-        "sticky_header_type": "on-scroll-up",
-        "show_line_separator": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "enable_customer_avatar": true,
-        "mobile_logo_position": "center",
-        "margin_bottom": 0,
-        "padding_top": 20,
-        "padding_bottom": 20
+        "show_search": true,
+        "show_account": true
       }
     }
   },
-  "order": [
-    "announcement-bar",
-    "header"
-  ]
+  "order": ["purelane_ticker", "purelane_header"]
 }

@@ -44,6 +44,18 @@
       },
       "summary": "Rated {{ rating }} out of {{ scale }}, from {{ count }} reviews"
     },
+    "ticker": {
+      "region": "Store announcements",
+      "pause": "Pause the announcements",
+      "play": "Play the announcements"
+    },
+    "header": {
+      "main_nav": "Main",
+      "search": "Search",
+      "account": "Account",
+      "menu": "Menu",
+      "cart": "Cart, {{ count }} items"
+    },
     "editor": {
       "no_products": "Pick a collection or add products to show the shop grid.",
       "no_combos": "Create purelane_combo metaobject entries, or pick some here, to fill this rail.",

@@ -1,0 +1,45 @@
+{%- comment -%}
+  Purelane — mobile sticky CTA
+
+  The bar pinned to the bottom of the viewport below 960px. It adds a body
+  class so the document reserves room for itself; the prototype hardcoded that
+  padding onto <body>, which meant every page paid for it whether the bar was
+  there or not.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-chrome.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.title != blank -%}
+  <div class="pl-sticky">
+    <span class="pl-sticky__lbl">
+      <b>{{ section.settings.title }}</b>
+      {%- if section.settings.subtitle != blank -%}
+        <span>{{ section.settings.subtitle }}</span>
+      {%- endif -%}
+    </span>
+
+    {%- if section.settings.button_label != blank -%}
+      <a class="pl-btn pl-btn--primary pl-btn--sm" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.button_label }}
+      </a>
+    {%- endif -%}
+  </div>
+
+  <script>document.body.classList.add('pl-has-sticky');</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Purelane sticky CTA",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Pick any 3, pay ₹499" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Free shipping, always" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Build bundle" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Purelane sticky CTA" }]
+}
+{% endschema %}

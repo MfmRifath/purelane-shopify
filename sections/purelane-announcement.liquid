@@ -1,0 +1,94 @@
+{%- comment -%}
+  Purelane — announcement ticker
+
+  The scrolling bar above the nav. Messages are blocks, so a merchant can add,
+  remove and reorder them. Rendered twice so the -50% translate loops
+  seamlessly; the second pass is hidden from assistive tech.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-chrome.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'purelane-chrome.js' | asset_url }}" defer="defer"></script>
+
+{%- if section.blocks.size > 0 -%}
+  <pl-ticker
+    class="pl-ticker"
+    style="--pl-tick-duration:{{ section.settings.speed }}s;"
+    role="region"
+    aria-label="{{ 'purelane.ticker.region' | t }}"
+  >
+    <button
+      type="button"
+      class="pl-ticker__toggle"
+      data-pl-toggle
+      aria-pressed="false"
+      aria-label="{{ 'purelane.ticker.pause' | t }}"
+      data-label-play="{{ 'purelane.ticker.play' | t | escape }}"
+      data-label-pause="{{ 'purelane.ticker.pause' | t | escape }}"
+    >
+      <span data-pl-icon-pause>{%- render 'purelane-icon', name: 'pause' -%}</span>
+      <span data-pl-icon-play hidden>{%- render 'purelane-icon', name: 'play' -%}</span>
+    </button>
+
+    <div class="pl-ticker__track">
+      {%- for pass in (1..2) -%}
+        {%- for block in section.blocks -%}
+          <span
+            {% if pass == 2 %}aria-hidden="true"{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.text -}}
+          </span>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </pl-ticker>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Purelane ticker",
+  "max_blocks": 8,
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Loop duration",
+      "min": 10,
+      "max": 90,
+      "step": 2,
+      "unit": "s",
+      "default": 30,
+      "info": "Higher is slower. Pauses on hover, on focus, and when Reduce motion is on."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "Free shipping <b>on every bundle across India</b>",
+          "info": "Bold text renders in the leaf accent colour."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Purelane ticker",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Free shipping <b>on every bundle across India</b>" } },
+        { "type": "message", "settings": { "text": "100% plant-based <b>and non-toxic</b>" } },
+        { "type": "message", "settings": { "text": "Loved by <b>30,000+ happy homes</b>" } },
+        { "type": "message", "settings": { "text": "Buy 3 <b>at flat ₹499</b>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
