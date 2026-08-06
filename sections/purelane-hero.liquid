@@ -1,0 +1,457 @@
+{%- comment -%}
+  Purelane — hero  (section.hero in the prototype)
+
+  Two block types, both reorderable in the theme editor:
+  - slide: one to three real products plus the price tag. Price, compare-at
+           price and the discount all come from a Shopify product.
+  - badge: the promise rail on desktop and the promise strip on mobile. Same
+           block renders both, so the two never drift apart.
+{%- endcomment -%}
+
+{{ 'purelane-fonts.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-core.css' | asset_url | stylesheet_tag }}
+{{ 'purelane-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'purelane-motion.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'purelane-hero.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign anchor = section.settings.anchor | handle
+
+  assign slides = section.blocks | where: 'type', 'slide'
+  assign badges = section.blocks | where: 'type', 'badge'
+
+  # A slide with no products has nothing to show. Skipping them keeps a
+  # half-configured hero from reserving an empty 680px stage, and the dots below
+  # skip the same blocks so the two stay index-aligned.
+  assign filled_slides = 0
+  for block in slides
+    if block.settings.products.size > 0
+      assign filled_slides = filled_slides | plus: 1
+    endif
+  endfor
+
+  assign pt = section.settings.padding_top
+  assign pt_mobile = section.settings.padding_top_mobile
+  assign pt_small = pt_mobile | minus: 14 | at_least: 0
+
+  assign heading_lines = section.settings.heading | strip | newline_to_br | split: '<br />'
+-%}
+
+<section
+  {% if anchor != blank %}id="{{ anchor }}"{% endif %}
+  class="pl pl-hero{% if section.settings.full_height %} pl-hero--full{% endif %}"
+  data-pl-scene="{{ section.settings.scene }}"
+  {% if section.settings.rail_label != blank %}
+    data-pl-rail-label="{{ section.settings.rail_label | escape }}"
+  {% endif %}
+  style="--pl-hero-pt:{{ pt }}px;--pl-hero-pt-mobile:{{ pt_mobile }}px;--pl-hero-pt-small:{{ pt_small }}px;--pl-pb:{{ section.settings.padding_bottom }}px;"
+>
+  <div class="pl-hero__grid">
+    {%- if badges.size > 0 -%}
+      <div class="pl-glass2 pl-badges" role="list" aria-label="{{ 'purelane.hero.promises' | t }}">
+        {%- for block in badges -%}
+          <div class="pl-badge" role="listitem" {{ block.shopify_attributes }}>
+            <span class="pl-badge__i" aria-hidden="true">
+              {%- render 'purelane-icon', name: block.settings.icon -%}
+            </span>
+            <span>{{ block.settings.label | escape | newline_to_br }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="pl-hero__copy">
+      {%- if section.settings.heading != blank -%}
+        <h1 class="pl-d1 pl-hero__title">
+          {%- for line in heading_lines -%}
+            {%- assign text = line | strip -%}
+            {%- if text != blank -%}
+              <span
+                {% if forloop.last and section.settings.highlight_last_line %}
+                  class="pl-accent"
+                {% endif %}
+              >{{ text }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.show_rule -%}
+        <div class="pl-rule pl-rv pl-rv--1" aria-hidden="true">
+          <i></i>
+          {%- render 'purelane-icon', name: 'leaf' -%}
+          <i></i>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}
+        <p class="pl-lede pl-rv pl-rv--2">{{ section.settings.body }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
+        <div class="pl-hero__cta pl-rv pl-rv--3">
+          {%- if section.settings.button_1_label != blank -%}
+            <a class="pl-btn pl-btn--primary" href="{{ section.settings.button_1_link | default: '#' }}">
+              {{ section.settings.button_1_label }}
+              {%- render 'purelane-icon', name: 'arrow-right' -%}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_2_label != blank -%}
+            <a class="pl-btn pl-btn--ghost" href="{{ section.settings.button_2_link | default: '#' }}">
+              {{ section.settings.button_2_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if badges.size > 0 -%}
+        <div class="pl-badgestrip pl-rv pl-rv--4">
+          {%- for block in badges -%}
+            <div class="pl-glass2">
+              {%- render 'purelane-icon', name: block.settings.icon -%}
+              {{ block.settings.label_mobile | default: block.settings.label | strip_newlines }}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if filled_slides > 0 -%}
+      <pl-hero-stage
+        class="pl-hero__prod"
+        data-autoplay="{{ section.settings.autoplay }}"
+        data-interval="{{ section.settings.autoplay_interval }}"
+      >
+        <div class="pl-hstage">
+          {%- assign rendered = 0 -%}
+          {%- for block in slides -%}
+            {%- liquid
+              assign products = block.settings.products
+              if products.size == 0
+                continue
+              endif
+
+              assign rendered = rendered | plus: 1
+              assign count = products.size | at_most: 3
+              assign price_product = block.settings.price_product
+              if price_product == blank
+                assign price_product = products.first
+              endif
+            -%}
+            <div
+              class="pl-hslide pl-hs{{ count }}{% if rendered == 1 %} is-on{% endif %}"
+              data-pl-slide
+              {% unless rendered == 1 %}aria-hidden="true"{% endunless %}
+              {{ block.shopify_attributes }}
+            >
+              {%- for product in products limit: 3 -%}
+                {%- liquid
+                  assign letters = 'a,b,c' | split: ','
+                  assign hp_class = 'pl-hp pl-hp--' | append: letters[forloop.index0]
+                  assign hp_class = hp_class | append: ' pl-hp--d' | append: forloop.index
+
+                  # The first slide is on screen at load, so its art is the LCP
+                  # candidate. Everything behind it stays lazy.
+                  assign hp_loading = 'lazy'
+                  assign hp_priority = ''
+                  if rendered == 1
+                    assign hp_loading = 'eager'
+                    assign hp_priority = 'high'
+                  endif
+                -%}
+                {%- render 'purelane-product-media',
+                  product: product,
+                  class: hp_class,
+                  sizes: '(max-width: 900px) 60vw, 30vw',
+                  widths: '200,320,440,600,780,900',
+                  loading: hp_loading,
+                  fetchpriority: hp_priority
+                -%}
+              {%- endfor -%}
+
+              {%- if price_product != blank -%}
+                <div class="pl-glass2 pl-ptag">
+                  {%- if block.settings.label != blank -%}
+                    <span class="pl-ptag__lbl">{{ block.settings.label }}</span>
+                  {%- endif -%}
+                  {%- render 'purelane-price',
+                    price: price_product.price,
+                    compare_at_price: price_product.compare_at_price,
+                    style: 'tag',
+                    savings: block.settings.savings,
+                    save_text: block.settings.save_text
+                  -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if filled_slides > 1 -%}
+          <div class="pl-hdots" role="group" aria-label="{{ 'purelane.hero.choose_view' | t }}">
+            {%- assign dot_index = 0 -%}
+            {%- for block in slides -%}
+              {%- liquid
+                if block.settings.products.size == 0
+                  continue
+                endif
+                assign dot_index = dot_index | plus: 1
+
+                assign dot_label = block.settings.label
+                if dot_label == blank
+                  assign dot_label = 'purelane.hero.slide_n' | t: index: dot_index
+                endif
+              -%}
+              <button
+                type="button"
+                data-pl-dot
+                class="{% if dot_index == 1 %}is-on{% endif %}"
+                aria-pressed="{% if dot_index == 1 %}true{% else %}false{% endif %}"
+                aria-label="{{ 'purelane.hero.show' | t: label: dot_label | escape }}"
+              ></button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </pl-hero-stage>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Purelane hero",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Clean\nThat\nLasts",
+      "info": "One line per line break."
+    },
+    {
+      "type": "checkbox",
+      "id": "highlight_last_line",
+      "label": "Highlight the last line",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rule",
+      "label": "Show leaf divider",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body",
+      "default": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it."
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Primary button",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary button",
+      "default": "How it works"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Product stage"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Rotate automatically",
+      "default": true,
+      "info": "Always off when the visitor has Reduce motion turned on. Pauses on hover, on focus, and when scrolled out of view."
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Time on each slide",
+      "min": 2000,
+      "max": 9000,
+      "step": 200,
+      "unit": "ms",
+      "default": 3800
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Anchor id",
+      "default": "hero"
+    },
+    {
+      "type": "text",
+      "id": "rail_label",
+      "label": "Progress rail label",
+      "default": "Hero"
+    },
+    {
+      "type": "range",
+      "id": "scene",
+      "label": "Backdrop depth",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "label": "Fill the screen",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding, desktop",
+      "min": 0,
+      "max": 240,
+      "step": 2,
+      "unit": "px",
+      "default": 150,
+      "info": "The prototype sat under a fixed nav bar. Reduce this if your header is not overlapping."
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding, mobile",
+      "min": 0,
+      "max": 240,
+      "step": 2,
+      "unit": "px",
+      "default": 132
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Product slide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Single bottle"
+        },
+        {
+          "type": "product_list",
+          "id": "products",
+          "label": "Products",
+          "limit": 3,
+          "info": "One, two or three. The layout changes to suit."
+        },
+        {
+          "type": "product",
+          "id": "price_product",
+          "label": "Price comes from",
+          "info": "The sellable product or bundle this slide is selling. Defaults to the first product above."
+        },
+        {
+          "type": "select",
+          "id": "savings",
+          "label": "Savings badge",
+          "options": [
+            { "value": "percent", "label": "Percent off" },
+            { "value": "amount", "label": "Amount saved" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "percent"
+        },
+        {
+          "type": "text",
+          "id": "save_text",
+          "label": "Savings text",
+          "info": "Leave blank to calculate it."
+        }
+      ]
+    },
+    {
+      "type": "badge",
+      "name": "Promise badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "ban", "label": "No entry" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "bubbles", "label": "Bubbles" },
+            { "value": "truck", "label": "Delivery" }
+          ],
+          "default": "leaf"
+        },
+        {
+          "type": "textarea",
+          "id": "label",
+          "label": "Label",
+          "default": "Plant\npowered",
+          "info": "Line breaks are kept in the desktop rail."
+        },
+        {
+          "type": "text",
+          "id": "label_mobile",
+          "label": "Short label for mobile",
+          "info": "Optional. Falls back to the label above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Purelane hero",
+      "blocks": [
+        { "type": "slide", "settings": { "label": "Single bottle", "savings": "percent" } },
+        { "type": "slide", "settings": { "label": "Any 2 products", "savings": "amount" } },
+        { "type": "slide", "settings": { "label": "Any 3 products", "savings": "amount" } },
+        { "type": "badge", "settings": { "icon": "leaf", "label": "Plant\npowered", "label_mobile": "Plant powered" } },
+        {
+          "type": "badge",
+          "settings": { "icon": "shield", "label": "Safe for\nkids & pets", "label_mobile": "Kids & pet safe" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon": "ban", "label": "Zero harsh\nchemicals", "label_mobile": "Zero harsh chem" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
