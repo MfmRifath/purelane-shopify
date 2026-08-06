@@ -1,75 +1,189 @@
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
+    "purelane_hero": {
+      "type": "purelane-hero",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "slide_1": {
+          "type": "slide",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "label": "Single bottle",
+            "savings": "percent"
           }
         },
-        "button": {
-          "type": "buttons",
+        "slide_2": {
+          "type": "slide",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "label": "Any 2 products",
+            "savings": "amount"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "label": "Any 3 products",
+            "savings": "amount"
+          }
+        },
+        "badge_1": {
+          "type": "badge",
+          "settings": {
+            "icon": "leaf",
+            "label": "Plant\npowered",
+            "label_mobile": "Plant powered"
+          }
+        },
+        "badge_2": {
+          "type": "badge",
+          "settings": {
+            "icon": "shield",
+            "label": "Safe for\nkids & pets",
+            "label_mobile": "Kids & pet safe"
+          }
+        },
+        "badge_3": {
+          "type": "badge",
+          "settings": {
+            "icon": "ban",
+            "label": "Zero harsh\nchemicals",
+            "label_mobile": "Zero harsh chem"
           }
         }
       },
-      "block_order": [
-        "heading",
-        "button"
-      ],
+      "block_order": ["slide_1", "slide_2", "slide_3", "badge_1", "badge_2", "badge_3"],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "heading": "Clean\nThat\nLasts",
+        "highlight_last_line": true,
+        "show_rule": true,
+        "body": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.",
+        "button_1_label": "Shop now",
+        "button_1_link": "#shop",
+        "button_2_label": "How it works",
+        "button_2_link": "#bundles",
+        "autoplay": true,
+        "autoplay_interval": 3800,
+        "anchor": "hero",
+        "rail_label": "Hero",
+        "scene": 1,
+        "full_height": true,
+        "padding_top": 150,
+        "padding_top_mobile": 132,
+        "padding_bottom": 34
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "purelane_reviews": {
+      "type": "purelane-reviews",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
+        "kicker": "That's what they said",
+        "rating": "4.8",
+        "rating_note": "from 8,000+ reviews",
+        "reach_prefix": "Loved by",
+        "reach": "12 lakh+",
+        "reach_suffix": "homes",
+        "reviews_to_show": 5,
+        "speed": 52,
+        "anchor": "reviews",
+        "rail_label": "Reviews",
+        "scene": 1,
+        "padding_top": 34,
+        "padding_bottom": 34
+      }
+    },
+    "purelane_combos": {
+      "type": "purelane-combos",
+      "settings": {
+        "kicker": "Pre-built to save you money",
+        "heading": "Best selling combos",
+        "lede": "Swipe through the boxes people order most. Each one is already priced below buying the same products on their own.",
+        "show_rule": true,
+        "combos_to_show": 6,
+        "stack_limit": 3,
+        "swipe_cue": "Swipe for more combos",
+        "note": "Tapping \"Shop bundle\" opens the bundle picker with these products already added. You can still swap anything before you pay.",
+        "anchor": "combos",
+        "rail_label": "Combos",
+        "scene": 3,
+        "padding_top": 34,
+        "padding_bottom": 34
+      }
+    },
+    "purelane_bundles": {
+      "type": "purelane-bundles",
+      "blocks": {
+        "tier_1": {
+          "type": "tier",
+          "settings": {
+            "tag": "Starter",
+            "quantity": 2,
+            "quantity_label": "Products",
+            "show_unit_note": true,
+            "features": "Pick any two products\nFree shipping across India",
+            "highlight": false,
+            "button_label": "Build this box",
+            "button_style": "ghost"
+          }
+        },
+        "tier_2": {
+          "type": "tier",
+          "settings": {
+            "tag": "Most popular",
+            "quantity": 3,
+            "quantity_label": "Products",
+            "show_unit_note": true,
+            "features": "Pick any three products\nCovers kitchen and laundry\nFree shipping across India",
+            "highlight": true,
+            "button_label": "Build this box",
+            "button_style": "primary"
+          }
+        },
+        "tier_3": {
+          "type": "tier",
+          "settings": {
+            "tag": "Whole home",
+            "quantity": 5,
+            "quantity_label": "Products",
+            "show_unit_note": true,
+            "features": "Pick any five products\nEvery room in one order\nFree shipping across India",
+            "highlight": false,
+            "button_label": "Build this box",
+            "button_style": "ghost"
+          }
+        }
+      },
+      "block_order": ["tier_1", "tier_2", "tier_3"],
+      "settings": {
+        "kicker": "Build your bundle",
+        "heading": "One box. Every room.",
+        "lede": "Mix and match across kitchen, laundry, home and skin. One flat price, no code needed, free shipping either way.",
+        "show_rule": false,
+        "anchor": "bundles",
+        "rail_label": "Bundles",
+        "scene": 3,
+        "padding_top": 34,
+        "padding_bottom": 34
+      }
+    },
+    "purelane_shop": {
+      "type": "purelane-shop",
+      "settings": {
+        "kicker": "Bestsellers",
+        "heading": "Loved by 30,000 homes",
+        "show_rule": true,
+        "source": "collection",
         "collection": "all",
         "products_to_show": 8,
         "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
         "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "show_badge": true,
+        "show_rating": true,
+        "quick_add": true,
+        "anchor": "shop",
+        "rail_label": "Shop",
+        "scene": 3,
+        "eager_first_row": false,
+        "padding_top": 34,
+        "padding_bottom": 34
       }
     }
   },
-  "order": [
-    "image_banner",
-    "featured_collection"
-  ]
+  "order": ["purelane_hero", "purelane_reviews", "purelane_combos", "purelane_bundles", "purelane_shop"]
 }
