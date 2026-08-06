@@ -1,0 +1,86 @@
+{%- comment -%}
+  Purelane atmosphere — the fixed underwater backdrop and the progress rail.
+
+  Rendered once per page from layout/theme.liquid rather than from a section,
+  because it sits behind every Purelane section at once. A section can't own it
+  without breaking the moment a merchant removes that section in the editor.
+
+  Toggle: Theme settings → Purelane → "Underwater backdrop".
+
+  The bubble seeds below are design, not content, so they stay in the theme.
+{%- endcomment -%}
+
+{%- if settings.purelane_atmosphere -%}
+  {{ 'purelane-atmosphere.css' | asset_url | stylesheet_tag }}
+
+  <div class="pl-scenes" data-pl-scenes data-pl-depth="1" aria-hidden="true">
+    <div class="pl-scene pl-scene--1 is-on"></div>
+    <div class="pl-scene pl-scene--2"></div>
+    <div class="pl-scene pl-scene--3"></div>
+    <div class="pl-scene pl-scene--4"></div>
+
+    <div class="pl-water">
+      <div class="pl-wl pl-wl--a">
+        <img
+          src="{{ 'purelane-water-a.svg' | asset_url }}"
+          alt=""
+          width="1800"
+          height="1100"
+          decoding="async"
+          fetchpriority="low"
+        >
+      </div>
+      <div class="pl-wl pl-wl--b">
+        <img
+          src="{{ 'purelane-water-b.svg' | asset_url }}"
+          alt=""
+          width="1800"
+          height="1100"
+          decoding="async"
+          fetchpriority="low"
+        >
+      </div>
+      <div class="pl-wl pl-wl--c">
+        <img
+          src="{{ 'purelane-water-c.svg' | asset_url }}"
+          alt=""
+          width="1800"
+          height="1100"
+          decoding="async"
+          fetchpriority="low"
+        >
+      </div>
+      <div class="pl-wl pl-wl--s">
+        <img
+          src="{{ 'purelane-water-s.svg' | asset_url }}"
+          alt=""
+          width="1800"
+          height="1100"
+          decoding="async"
+          fetchpriority="low"
+        >
+      </div>
+
+      <div class="pl-bub">
+        {%- assign bubbles = '91.9|6.7|21.5|19.0|-11,43.4|5.7|26.8|16.1|-11,96.6|6.2|13.7|10.3|38,6.0|3.6|24.4|10.6|3,70.3|3.3|20.9|9.2|-39,67.7|4.0|27.0|16.5|-5,2.1|7.1|22.0|3.1|-37,69.4|8.1|21.9|10.7|-24,64.1|8.2|17.3|9.0|2,21.8|7.1|15.7|18.4|-13,61.9|6.6|26.3|7.2|-23,45.9|8.9|24.3|7.2|20,52.5|3.3|20.2|19.6|-31,11.1|7.9|20.4|10.8|-40,7.6|6.4|19.5|0.2|-26,18.6|9.0|24.5|8.7|13' | split: ',' -%}
+        {%- for bubble in bubbles -%}
+          {%- assign b = bubble | split: '|' -%}
+          <span style="--x:{{ b[0] }}%;--s:{{ b[1] }}px;--dur:{{ b[2] }}s;--dly:{{ b[3] }}s;--drift:{{ b[4] }}px"></span>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="pl-vig"></div>
+  </div>
+{%- endif -%}
+
+{%- if settings.purelane_rail -%}
+  {%- unless settings.purelane_atmosphere -%}
+    {{ 'purelane-atmosphere.css' | asset_url | stylesheet_tag }}
+  {%- endunless -%}
+  <nav class="pl-rail" data-pl-rail aria-label="{{ 'purelane.a11y.rail_label' | t }}"></nav>
+{%- endif -%}
+
+{%- if settings.purelane_atmosphere or settings.purelane_rail -%}
+  <script src="{{ 'purelane-atmosphere.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
