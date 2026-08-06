@@ -103,8 +103,10 @@ shopify theme dev --store your-store.myshopify.com
 shopify theme check
 ```
 
-`shopify theme check` is clean on every Purelane file. The nine offenses it
-reports are all pre-existing in Dawn 15.5.0.
+`shopify theme check` is clean on every Purelane file. The eight warnings it
+reports are all pre-existing in stock Dawn 15.5.0 — `layout/password.liquid`,
+`layout/theme.liquid`, `main-article`, `main-list-collections`, `main-product`,
+`main-search` and `quick-order-product-row`.
 
 ---
 
