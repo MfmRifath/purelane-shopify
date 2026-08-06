@@ -1,4 +1,56 @@
 {
+  "purelane": {
+    "a11y": {
+      "rail_label": "Section progress"
+    },
+    "price": {
+      "from": "From",
+      "regular": "Regular price",
+      "save": "Save {{ amount }}",
+      "percent_off": "{{ percent }}% off"
+    },
+    "card": {
+      "add_to_cart": "Add to cart",
+      "choose_options": "Choose options",
+      "view_product": "View product",
+      "sold_out": "Sold out",
+      "on_sale": "On sale"
+    },
+    "combos": {
+      "count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "cta": "Shop bundle"
+    },
+    "bundles": {
+      "per_product": "Flat {{ amount }} per product"
+    },
+    "hero": {
+      "promises": "Product promises",
+      "choose_view": "Choose how many products to show",
+      "show": "Show {{ label }}",
+      "slide_n": "option {{ index }}"
+    },
+    "reviews": {
+      "region": "Customer reviews",
+      "pause": "Pause the review rail",
+      "play": "Play the review rail",
+      "anonymous": "Verified buyer",
+      "stars": "Rated {{ rating }} out of 5",
+      "count": {
+        "one": "{{ count }} review",
+        "other": "{{ count }} reviews"
+      },
+      "summary": "Rated {{ rating }} out of {{ scale }}, from {{ count }} reviews"
+    },
+    "editor": {
+      "no_products": "Pick a collection or add products to show the shop grid.",
+      "no_combos": "Create purelane_combo metaobject entries, or pick some here, to fill this rail.",
+      "no_reviews": "Create purelane_review metaobject entries, or pick some here, to fill this rail.",
+      "no_tiers": "Add a tier block to show your bundles."
+    }
+  },
   "general": {
     "password_page": {
       "login_form_heading": "Enter store using password:",

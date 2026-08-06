@@ -8,6 +8,29 @@
     "theme_support_url": "https://support.shopify.com/"
   },
   {
+    "name": "Purelane",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Shared chrome for the Purelane sections. Both are rendered once per page, behind every Purelane section, so they cannot be broken by adding or removing a single section."
+      },
+      {
+        "type": "checkbox",
+        "id": "purelane_atmosphere",
+        "label": "Underwater backdrop",
+        "default": true,
+        "info": "The fixed gradient, caustics and bubbles. Turn off to remove four decorative SVGs and the scroll listener from every page."
+      },
+      {
+        "type": "checkbox",
+        "id": "purelane_rail",
+        "label": "Section progress rail",
+        "default": true,
+        "info": "The dot rail on the right, shown from 1180px up. Built from whichever Purelane sections are on the page."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {
