@@ -1,0 +1,66 @@
+{%- comment -%}
+  Purelane price
+
+  Shared by the hero price tag, the shop card, the combo rail and the bundle
+  tiers. Same markup everywhere; the surrounding section styles it via the
+  `pl-price--{style}` modifier. In the prototype each of those four places had
+  its own hardcoded rupee strings and its own "33% off" / "Save ₹398" label.
+
+  Accepts:
+  - price             {Number}  in cents, required
+  - compare_at_price  {Number}  in cents, optional
+  - style             {String}  card | tag | combo | tier
+  - savings           {String}  percent | amount | none  (default: percent)
+  - save_text         {String}  overrides the computed savings label
+  - price_varies      {Boolean} prefixes with "From"
+  - class             {String}  extra classes
+
+  Money formatting is left to `| money`, so it follows the store's currency
+  settings instead of being baked into the theme.
+{%- endcomment -%}
+
+{%- liquid
+  assign pl_style = style | default: 'card'
+  assign pl_savings = savings | default: 'percent'
+  assign pl_compare = compare_at_price | default: 0
+  assign pl_on_sale = false
+  if pl_compare > price
+    assign pl_on_sale = true
+  endif
+
+  assign pl_label = save_text
+  if pl_label == blank and pl_on_sale and pl_savings != 'none'
+    if pl_savings == 'amount'
+      assign pl_diff = pl_compare | minus: price | money
+      assign pl_label = 'purelane.price.save' | t: amount: pl_diff
+    else
+      assign pl_pct = pl_compare | minus: price | times: 100.0 | divided_by: pl_compare | round
+      assign pl_label = 'purelane.price.percent_off' | t: percent: pl_pct
+    endif
+  endif
+
+  assign pl_classes = 'pl-price pl-price--' | append: pl_style
+  if class != blank
+    assign pl_classes = pl_classes | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ pl_classes }}">
+  <strong class="pl-price__now">
+    {%- if price_varies -%}
+      <span class="pl-price__from">{{ 'purelane.price.from' | t }}</span>
+    {%- endif -%}
+    {{- price | money -}}
+  </strong>
+
+  {%- if pl_on_sale -%}
+    <s class="pl-price__was">
+      <span class="pl-visually-hidden">{{ 'purelane.price.regular' | t }}</span>
+      {{- pl_compare | money -}}
+    </s>
+  {%- endif -%}
+
+  {%- if pl_label != blank -%}
+    <em class="pl-price__save">{{ pl_label }}</em>
+  {%- endif -%}
+</div>

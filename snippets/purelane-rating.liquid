@@ -1,0 +1,32 @@
+{%- comment -%}
+  Purelane rating
+
+  Reads Shopify's standard `reviews.rating` / `reviews.rating_count` product
+  metafields, the same pair Dawn's product cards use, so any review app that
+  writes to them lights this up with no theme change. Renders nothing when the
+  product has no rating yet.
+
+  Accepts:
+  - product {Product} required
+  - class   {String}  optional
+{%- endcomment -%}
+
+{%- liquid
+  assign rating = product.metafields.reviews.rating.value
+  assign count = product.metafields.reviews.rating_count.value
+-%}
+
+{%- if rating != blank and rating.rating > 0 -%}
+  {%- assign scale = rating.scale_max | default: 5 -%}
+  <div class="pl-rate {{ class }}">
+    <b aria-hidden="true">★ {{ rating.rating }}</b>
+    {%- if count > 0 -%}
+      <span aria-hidden="true">
+        · {{ 'purelane.reviews.count' | t: count: count }}
+      </span>
+    {%- endif -%}
+    <span class="pl-visually-hidden">
+      {{- 'purelane.reviews.summary' | t: rating: rating.rating, scale: scale, count: count -}}
+    </span>
+  </div>
+{%- endif -%}
