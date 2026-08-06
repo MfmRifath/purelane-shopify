@@ -1,0 +1,9 @@
+{%- comment -%}
+  Purelane boot — rendered once from layout/theme.liquid, inside <head>.
+
+  Marks the document as JS-capable before first paint. Every Purelane
+  scroll-reveal hides itself behind `.pl-js`, so if scripts are blocked or
+  fail the content renders in its final state instead of staying at opacity 0
+  forever (which is what the prototype did).
+{%- endcomment -%}
+<script>document.documentElement.classList.add('pl-js');</script>

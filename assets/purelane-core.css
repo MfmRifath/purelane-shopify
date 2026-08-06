@@ -1,0 +1,456 @@
+/* ==========================================================================
+   Purelane core
+   Tokens, type scale, glass surfaces, buttons and the scroll-reveal primitive.
+   Loaded once per page by any Purelane section.
+
+   Notes on the port from purelane-homepage.html:
+   - The prototype shipped two full stylesheets: a dark "V1" and a light "V2"
+     that overrode most of it. Only V2 is ever painted, so the two layers are
+     flattened here into one resolved set of values.
+   - Every custom property and class is namespaced `pl-` / `--pl-`. The
+     prototype used `.card`, `.btn`, `.rv`, `--ink`, `--surface`, which collide
+     with Dawn.
+   ========================================================================== */
+
+:root {
+  --pl-ink: #f4f0fb;
+  --pl-deep: #e2daf3;
+  --pl-brand: #4b3a8f;
+  --pl-brand-lt: #6b55b8;
+  --pl-paper: #241a3d;
+  --pl-paper-2: rgba(36, 26, 61, 0.78);
+  --pl-paper-3: rgba(36, 26, 61, 0.56);
+  --pl-accent: #b8701c;
+  --pl-accent-2: #c9761d;
+  --pl-leaf: #4f7d10;
+  --pl-leaf-2: #7a9c1e;
+  --pl-teal: #00706a;
+  --pl-teal-deep: #004b46;
+  --pl-teal-ink: #01423b;
+  --pl-surface: #17102b;
+
+  --pl-g-bg: linear-gradient(158deg, rgba(255, 255, 255, 0.8), rgba(236, 230, 247, 0.56) 58%, rgba(222, 212, 240, 0.5));
+  --pl-g-line: rgba(75, 58, 143, 0.16);
+  --pl-g-shadow: 0 22px 54px rgba(58, 44, 112, 0.13);
+  --pl-g-inset: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+
+  --pl-r: 26px;
+  --pl-r-sm: 16px;
+  --pl-maxw: 1180px;
+  --pl-sec-y: 34px;
+  --pl-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --pl-blur-1: 24px;
+  --pl-blur-2: 18px;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --pl-sec-y: 22px;
+    --pl-blur-1: 16px;
+    --pl-blur-2: 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Section shell
+   `.pl` is the root of every Purelane section. It re-establishes the
+   prototype's body typography locally instead of restyling Dawn's <body>.
+   -------------------------------------------------------------------------- */
+
+.pl {
+  position: relative;
+  z-index: 2;
+  padding-block: var(--pl-pt, var(--pl-sec-y)) var(--pl-pb, var(--pl-sec-y));
+  font-family: 'Purelane Text', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--pl-paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pl * {
+  box-sizing: border-box;
+}
+
+.pl img,
+.pl svg {
+  display: block;
+  max-width: 100%;
+}
+
+.pl a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Every use site sizes its own icon; this is the fallback so an icon dropped
+   somewhere new never falls back to the 300x150 default replaced size. */
+.pl-icon {
+  width: 1em;
+  height: 1em;
+}
+
+.pl button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.pl :focus-visible {
+  outline: 2px solid var(--pl-leaf);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.pl-wrap {
+  max-width: var(--pl-maxw);
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.pl-pad {
+  padding: clamp(26px, 3.4vw, 40px);
+}
+
+@media (max-width: 760px) {
+  .pl-pad {
+    padding: 22px 18px;
+  }
+}
+
+/* Theme-editor only: shown in place of a section that has nothing to render
+   yet, so a merchant sees why the panel is empty instead of a blank strip. */
+.pl-empty {
+  text-align: center;
+  padding: 26px 0;
+}
+
+.pl-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Type
+   -------------------------------------------------------------------------- */
+
+.pl-d1,
+.pl-d2,
+.pl-d3,
+.pl-d4 {
+  font-family: 'Purelane Display', 'Outfit', system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.018em;
+  font-weight: 800;
+  line-height: 0.87;
+  color: var(--pl-surface);
+  margin: 0;
+}
+
+.pl-d1 {
+  font-size: clamp(48px, 8.6vw, 112px);
+}
+
+.pl-d2 {
+  font-size: clamp(30px, 4.6vw, 54px);
+  line-height: 0.94;
+}
+
+.pl-d3 {
+  font-size: clamp(21px, 2.5vw, 30px);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pl-d4 {
+  font-size: clamp(16px, 1.6vw, 19px);
+  line-height: 1.14;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+}
+
+@media (max-width: 760px) {
+  .pl-d1 {
+    font-size: clamp(44px, 13.5vw, 64px);
+  }
+}
+
+.pl-accent {
+  color: var(--pl-accent);
+}
+
+.pl-lede {
+  font-size: clamp(15px, 1.35vw, 17.5px);
+  color: var(--pl-paper-2);
+  max-width: 44ch;
+  margin: 0;
+}
+
+.pl-body-s {
+  font-size: 14.5px;
+  color: var(--pl-paper-2);
+  line-height: 1.66;
+  margin: 0;
+}
+
+.pl-kicker {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pl-paper-3);
+}
+
+/* --------------------------------------------------------------------------
+   Section heading block
+   -------------------------------------------------------------------------- */
+
+.pl-head {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.pl-head .pl-d2 {
+  margin-bottom: 12px;
+}
+
+.pl-head .pl-kicker + .pl-d2 {
+  margin-top: 12px;
+}
+
+.pl-head .pl-lede {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pl-head .pl-lede--after {
+  margin-top: 14px;
+}
+
+.pl-rule {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 0 0 20px;
+  max-width: 270px;
+}
+
+.pl-rule i {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(75, 58, 143, 0.34), transparent);
+}
+
+.pl-rule svg {
+  width: 16px;
+  height: 16px;
+  color: var(--pl-accent);
+  flex: 0 0 auto;
+}
+
+.pl-head .pl-rule {
+  margin: 0 auto;
+  justify-content: center;
+  max-width: 240px;
+}
+
+.pl-head .pl-rule i:first-child {
+  background: linear-gradient(90deg, transparent, rgba(75, 58, 143, 0.34));
+}
+
+/* --------------------------------------------------------------------------
+   Glass surfaces
+   -------------------------------------------------------------------------- */
+
+.pl-glass {
+  background: var(--pl-g-bg);
+  backdrop-filter: blur(var(--pl-blur-1)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--pl-blur-1)) saturate(150%);
+  border: 1px solid var(--pl-g-line);
+  border-radius: var(--pl-r);
+  box-shadow: var(--pl-g-shadow), var(--pl-g-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+.pl-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.55), transparent 32%, transparent 74%, rgba(201, 118, 29, 0.06));
+}
+
+.pl-glass2 {
+  background: linear-gradient(158deg, rgba(255, 255, 255, 0.66), rgba(236, 230, 247, 0.44));
+  backdrop-filter: blur(var(--pl-blur-2)) saturate(135%);
+  -webkit-backdrop-filter: blur(var(--pl-blur-2)) saturate(135%);
+  border: 1px solid rgba(75, 58, 143, 0.13);
+  border-radius: var(--pl-r);
+  box-shadow: 0 16px 38px rgba(58, 44, 112, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  position: relative;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.pl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transition: transform 0.35s var(--pl-ease), box-shadow 0.35s var(--pl-ease), background 0.35s var(--pl-ease);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.pl-btn svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.pl-btn--primary {
+  background: linear-gradient(135deg, var(--pl-teal), var(--pl-teal-deep));
+  color: #f4fdf6;
+  box-shadow: 0 12px 26px rgba(0, 80, 74, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.pl-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(0, 80, 74, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.pl-btn--ghost {
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(75, 58, 143, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--pl-teal-ink);
+}
+
+.pl-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.pl-btn--sm {
+  height: 38px;
+  padding: 0 18px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.pl-btn--block {
+  width: 100%;
+}
+
+/* Sold out / unavailable. Not in the prototype: it has no concept of stock.
+   Kept inside the existing button silhouette so the grid rhythm is unchanged. */
+.pl-btn[disabled],
+.pl-btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveal
+   The prototype set opacity:0 in CSS and relied on JS to add `.in`, so a JS
+   failure left the page blank. Here the hidden state only applies once
+   `purelane-boot` has confirmed JS is running.
+   -------------------------------------------------------------------------- */
+
+.pl-js .pl-rv {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(7px);
+  transition: opacity 0.95s var(--pl-ease), transform 0.95s var(--pl-ease), filter 0.95s var(--pl-ease);
+}
+
+.pl-js .pl-rv.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.pl-rv--1 {
+  transition-delay: 0.09s;
+}
+.pl-rv--2 {
+  transition-delay: 0.18s;
+}
+.pl-rv--3 {
+  transition-delay: 0.27s;
+}
+.pl-rv--4 {
+  transition-delay: 0.36s;
+}
+.pl-rv--5 {
+  transition-delay: 0.45s;
+}
+
+/* --------------------------------------------------------------------------
+   Product media
+   In the prototype every bottle was a base64 background-image on a <span>.
+   Here it is a real <img> from Shopify (or an inline SVG stand-in when the
+   product has no image), sized by height exactly as the prototype was.
+   -------------------------------------------------------------------------- */
+
+.pl-pimg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+  flex: 0 0 auto;
+}
+
+.pl-pimg--ph {
+  color: var(--pl-brand-lt);
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .pl *,
+  .pl *::before,
+  .pl *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pl-js .pl-rv {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
