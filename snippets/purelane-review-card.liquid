@@ -1,0 +1,53 @@
+{%- comment -%}
+  Purelane review card, from a `purelane_review` metaobject entry.
+
+  Accepts:
+  - review    {Metaobject} required
+  - duplicate {Boolean}    true for the second, mirrored half of the marquee
+{%- endcomment -%}
+
+{%- liquid
+  assign rating = review.rating.value | default: 5 | at_most: 5 | at_least: 1
+  assign product = review.product.value
+
+  assign context = review.context.value
+  if context == blank
+    assign context = product.title
+  endif
+
+  assign author = review.author.value
+  if author == blank
+    assign author = 'purelane.reviews.anonymous' | t
+  endif
+
+  capture stars
+    for i in (1..rating)
+      echo '★'
+    endfor
+  endcapture
+-%}
+
+<article class="pl-glass2 pl-rcard"{% if duplicate %} aria-hidden="true"{% endif %}>
+  <span class="pl-stars" aria-hidden="true">{{ stars }}</span>
+  {%- unless duplicate -%}
+    <span class="pl-visually-hidden">{{ 'purelane.reviews.stars' | t: rating: rating }}</span>
+  {%- endunless -%}
+
+  {%- if review.title.value != blank -%}
+    <h3 class="pl-rcard__title">{{ review.title.value }}</h3>
+  {%- endif -%}
+
+  {%- if review.body.value != blank -%}
+    <p class="pl-rcard__body">{{ review.body.value }}</p>
+  {%- endif -%}
+
+  <div class="pl-rcard__who">
+    {%- if review.verified.value -%}
+      {%- render 'purelane-icon', name: 'check-bold' -%}
+    {%- endif -%}
+    <b>{{ author }}</b>
+    {%- if context != blank -%}
+      <span>· {{ context }}</span>
+    {%- endif -%}
+  </div>
+</article>
