@@ -1,0 +1,123 @@
+{%- comment -%}
+  Purelane combo card
+
+  Driven by a `purelane_combo` metaobject entry. The tray images are the real
+  products in the combo; the price, compare-at price and link come off the
+  sellable bundle product, so a price change in Shopify moves this card without
+  anyone touching the theme.
+
+  Accepts:
+  - combo        {Metaobject} required
+  - stack_limit  {Number}     images to show in the tray, default 3
+  - reveal_delay {Number}
+{%- endcomment -%}
+
+{%- liquid
+  assign items = combo.products.value
+  assign captions = combo.item_captions.value
+  assign bundle = combo.bundle_product.value
+  assign featured = combo.featured.value
+  assign limit = stack_limit | default: 3
+
+  assign count_label = combo.items_count_label.value
+  if count_label == blank and items.size > 0
+    assign count_label = 'purelane.combos.count' | t: count: items.size
+  endif
+
+  assign cta_url = combo.cta_url.value
+  if cta_url == blank
+    assign cta_url = bundle.url
+  endif
+
+  assign cta_label = combo.cta_label.value
+  if cta_label == blank
+    assign cta_label = 'purelane.combos.cta' | t
+  endif
+-%}
+
+<article class="pl-glass pl-combo{% if featured %} pl-combo--featured{% endif %}">
+  {%- if items.size > 0 or combo.tray_label.value != blank -%}
+    <div class="pl-combo__tray">
+      {%- if combo.tray_label.value != blank -%}
+        <span class="pl-combo__save">{{ combo.tray_label.value }}</span>
+      {%- endif -%}
+
+      {%- if combo.flag.value != blank -%}
+        <span class="pl-combo__flag">{{ combo.flag.value }}</span>
+      {%- endif -%}
+
+      {%- if items.size > 0 -%}
+        <div class="pl-stack">
+          {%- for item in items limit: limit -%}
+            {%- unless forloop.first -%}
+              <span class="pl-stack__plus" aria-hidden="true">+</span>
+            {%- endunless -%}
+
+            {%- liquid
+              assign caption = captions[forloop.index0]
+              if caption == blank
+                assign caption = item.metafields.custom.benefit.value
+              endif
+            -%}
+
+            <span class="pl-stack__it">
+              {%- if item.featured_image != blank -%}
+                {%- render 'purelane-product-media',
+                  product: item,
+                  sizes: '66px',
+                  widths: '60,90,120,160'
+                -%}
+              {%- else -%}
+                {%- comment -%}
+                  No image yet. The prototype had this exact state as a dashed
+                  leaf tile, so a half-built combo still reads as three items.
+                {%- endcomment -%}
+                <span class="pl-stack__tile" role="img" aria-label="{{ item.title | escape }}">
+                  {%- render 'purelane-icon', name: 'leaf' -%}
+                </span>
+              {%- endif -%}
+
+              <span class="pl-stack__cap">{{ caption | default: item.title }}</span>
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="pl-combo__body">
+    <h3 class="pl-combo__title">{{ combo.title.value | default: bundle.title }}</h3>
+
+    {%- if count_label != blank -%}
+      <div class="pl-combo__count">{{ count_label }}</div>
+    {%- endif -%}
+
+    {%- if combo.includes.value != blank -%}
+      <p class="pl-combo__inc">{{ combo.includes.value }}</p>
+    {%- endif -%}
+
+    {%- if bundle != blank -%}
+      {%- render 'purelane-price',
+        price: bundle.price,
+        compare_at_price: bundle.compare_at_price,
+        style: 'combo',
+        savings: 'amount'
+      -%}
+    {%- endif -%}
+
+    {%- if combo.fine_print.value != blank -%}
+      <div class="pl-combo__fine">{{ combo.fine_print.value }}</div>
+    {%- endif -%}
+
+    {%- if cta_url != blank -%}
+      <a
+        class="pl-btn pl-btn--block {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %}"
+        href="{{ cta_url }}"
+      >
+        {{ cta_label }}
+        <span class="pl-visually-hidden">, {{ combo.title.value | default: bundle.title }}</span>
+        {%- render 'purelane-icon', name: 'arrow-right' -%}
+      </a>
+    {%- endif -%}
+  </div>
+</article>
