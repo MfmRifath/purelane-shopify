@@ -73,6 +73,22 @@ asserted before it was checked. It happens to be real. `theme-check` flagging
 `{% continue %}` as an undefined object is a false positive that I also had to
 verify by hand rather than trust either direction.
 
+**5. Green locally, rejected by the platform.** Two hero range settings were
+written as `min: 0, max: 240, step: 2`. Shopify caps range settings at 101
+steps; that is 120. `shopify theme check` passed it clean, and the schema is
+valid JSON, so nothing local objected. The Shopify API rejected it on push,
+which failed the whole hero section, which then cascaded into
+`Section type 'purelane-hero' does not refer to an existing section file`
+against `templates/index.json` — an error message that points at the wrong file
+entirely.
+
+The lesson is the same as #1 but one layer out: **passing your own tools is not
+the same as passing the platform.** The fix was not just changing `240` to
+`200`; it was adding a range-setting validator to CI
+(`.github/scripts/validate-json.js`) that checks step count, default bounds and
+step alignment across every section and block, and proving it fails by
+reintroducing the bug. That check now runs on every push.
+
 ---
 
 ## The loop that worked
